@@ -1,0 +1,16 @@
+{
+  "id": "quick-keys",
+  "name": "复制链接快捷键",
+  "description": "Alt+E 把当前标签页的全部资源链接复制到剪贴板。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "tool",
+  "hooks": [
+    "shortcuts"
+  ],
+  "config": {
+    "mod": "alt",
+    "key": "e"
+  },
+  "code": "function copyText(t) {\n  try { if (MS.copy) { MS.copy(t); return; } } catch (e0) {}\n  try {\n    if (navigator.clipboard && navigator.clipboard.writeText) {\n      navigator.clipboard.writeText(t);\n      return;\n    }\n  } catch (e1) {}\n  try {\n    var ta = document.createElement('textarea');\n    ta.value = t;\n    ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';\n    document.body.appendChild(ta);\n    ta.select();\n    document.execCommand('copy');\n    ta.remove();\n    return;\n  } catch (e2) {}\n  MS.log(t);\n}\nMS.hook('shortcuts', function () {\n  var mod = MS.config.get('mod', 'alt');\n  var key = MS.config.get('key', 'e');\n  return [{\n    mod: mod,\n    key: key,\n    run: function () {\n      var arr = MS.media.list('img').concat(MS.media.list('video') || []);\n      if (!arr.length) { MS.toast('还没有资源', 'warn'); return; }\n      var text = arr.join('\\n');\n      copyText(text);\n      MS.toast('已复制 ' + arr.length + ' 条链接', 'success');\n    }\n  }];\n});"
+}
