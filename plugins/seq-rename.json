@@ -1,0 +1,16 @@
+{
+  "id": "seq-rename",
+  "name": "文件名加序号",
+  "description": "下载文件名前面加上补齐的序号，例如 003_photo.jpg。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "download",
+  "hooks": [
+    "download:filename"
+  ],
+  "config": {
+    "pad": 3,
+    "sep": "_"
+  },
+  "code": "MS.hook('download:filename', function (name, url, idx) {\n  var pad = MS.config.get('pad', 3);\n  var sep = MS.config.get('sep', '_');\n  var n = String(idx || 0);\n  while (n.length < pad) n = '0' + n;\n  if (String(name).indexOf(n + sep) === 0) return name;\n  return n + sep + name;\n});"
+}
