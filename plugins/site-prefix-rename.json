@@ -1,0 +1,15 @@
+{
+  "id": "site-prefix-rename",
+  "name": "文件名加站点前缀",
+  "description": "下载文件名前面加上来源站点域名，便于区分同名的图。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "download",
+  "hooks": [
+    "download:filename"
+  ],
+  "config": {
+    "sep": "_"
+  },
+  "code": "MS.hook('download:filename', function (name, url, idx) {\n  var sep = MS.config.get('sep', '_');\n  var host = '';\n  try {\n    host = new URL(String(url), location.href).hostname.replace(/^www\\./, '');\n  } catch (e) {\n    return name;\n  }\n  if (!host) return name;\n  if (String(name).indexOf(host + sep) === 0) return name;\n  return host + sep + name;\n});"
+}
