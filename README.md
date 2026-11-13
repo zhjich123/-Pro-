@@ -9,16 +9,36 @@
 
 ## 仓库结构
 
+**一个插件一个文件**，放在 `plugins/` 目录下，文件名就是插件 id：
+
 ```
-plugins.json          # 插件索引（市场优先读这个）
-plugins/*.json        # 可选：一插件一文件，没有索引时脚本会自动扫目录
+plugins/
+  only-video-ext.json
+  dedup-normalized.json
+  skip-small-images.json
+  ...
 ```
 
-脚本按以下顺序尝试，命中即用：
+单个文件的内容就是一个插件对象（不是数组）：
 
-1. 根目录 `plugins.json` / `manifest.json` / `index.json`
-2. `plugins/` 目录下的所有 `.json`
+```json
+{
+  "id": "only-video-ext",
+  "name": "只要指定视频格式",
+  "version": "1.0.0",
+  "hooks": ["resource:keep"],
+  "config": {},
+  "code": "MS.hook('resource:keep', function (kind, url) { ... });"
+}
+```
+
+脚本的读取顺序：
+
+1. `plugins.json` / `manifest.json` / `index.json`（本仓库不使用）
+2. `plugins/` 目录下的所有 `.json`（本仓库走这条路）
 3. 根目录下的所有 `.json`
+
+新增插件只需往 `plugins/` 里加一个 `<id>.json`，不用改任何索引文件。
 
 ## 插件格式
 
