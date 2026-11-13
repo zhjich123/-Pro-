@@ -1,0 +1,22 @@
+{
+  "id": "only-video-ext",
+  "name": "只要指定视频格式",
+  "description": "视频列表只保留指定扩展名的直链；其它视频格式（含 m3u8/mpd）会被隐藏，需要的话把它们加进扩展名列表；无扩展名的直链不受影响。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "enhance",
+  "hooks": [
+    "resource:keep"
+  ],
+  "config": {
+    "exts": [
+      ".mp4",
+      ".webm",
+      ".mkv",
+      ".mov",
+      ".m4v",
+      ".flv"
+    ]
+  },
+  "code": "MS.hook('resource:keep', function (kind, url) {\n  if (kind !== 'video') return true;\n  var exts = MS.config.get('exts', ['.mp4', '.webm', '.mkv', '.mov', '.m4v', '.flv']);\n  if (!exts || !exts.length) return true;\n  var u = String(url || '').toLowerCase().split('#')[0].split('?')[0];\n  var m = u.match(/\\.([a-z0-9]{2,5})$/);\n  if (!m) return true;\n  var hit = '.' + m[1];\n  for (var i = 0; i < exts.length; i++) {\n    if (String(exts[i] || '').toLowerCase() === hit) return true;\n  }\n  var KNOWN = ['.mp4', '.webm', '.mkv', '.mov', '.m4v', '.flv', '.avi', '.wmv',\n               '.ts', '.m3u8', '.mpd', '.3gp', '.ogv', '.rmvb', '.f4v'];\n  if (KNOWN.indexOf(hit) >= 0) return false;\n  return true;\n});"
+}
