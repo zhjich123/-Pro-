@@ -1,0 +1,13 @@
+{
+  "id": "dedup-normalized",
+  "name": "按地址去重",
+  "description": "扫描时自动丢弃归一化后重复的资源地址（去掉参数与锚点）。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "enhance",
+  "hooks": [
+    "resource:keep"
+  ],
+  "config": {},
+  "code": "var accepted = Object.create(null);\nvar acceptedSize = 0;\nfunction normKey(u) {\n  try {\n    var a = new URL(u, location.href);\n    return a.origin + a.pathname;\n  } catch (e) {\n    return String(u).split('#')[0].split('?')[0];\n  }\n}\nMS.hook('resource:keep', function (kind, url) {\n  var u = String(url || '');\n  if (!u) return true;\n  var key = normKey(u);\n  var prev = accepted[key];\n  if (!prev) {\n    if (acceptedSize > 8000) { accepted = Object.create(null); acceptedSize = 0; }\n    accepted[key] = u;\n    acceptedSize++;\n    return true;\n  }\n  return prev === u;\n});"
+}
