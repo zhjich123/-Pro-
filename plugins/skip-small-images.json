@@ -1,0 +1,17 @@
+{
+  "id": "skip-small-images",
+  "name": "过滤小图与占位图",
+  "description": "丢弃小于指定体积 / 尺寸的图片，以及常见的占位图、埋点像素。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "enhance",
+  "hooks": [
+    "resource:keep"
+  ],
+  "config": {
+    "minBytes": 8192,
+    "minWidth": 100,
+    "minHeight": 100
+  },
+  "code": "MS.hook('resource:keep', function (kind, url, meta) {\n  if (kind !== 'img') return true;\n  var junk = /(pixel|spacer|blank|transparent|1x1|loading|placeholder|clear\\.gif|spacer\\.gif)/i;\n  if (junk.test(String(url || ''))) return false;\n  var minBytes = MS.config.get('minBytes', 8192);\n  var minW = MS.config.get('minWidth', 100);\n  var minH = MS.config.get('minHeight', 100);\n  if (meta) {\n    if (meta.size > 0 && minBytes > 0 && meta.size < minBytes) return false;\n    if (meta.width > 0 && minW > 0 && meta.width < minW) return false;\n    if (meta.height > 0 && minH > 0 && meta.height < minH) return false;\n  }\n  return true;\n});"
+}
