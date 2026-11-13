@@ -1,0 +1,13 @@
+{
+  "id": "copy-names-button",
+  "name": "底部复制文件名按钮",
+  "description": "在底部操作栏追加一个按钮，一键把当前列表的文件名复制到剪贴板。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "tool",
+  "hooks": [
+    "render:footerButtons"
+  ],
+  "config": {},
+  "code": "function copyText(t) {\n  try { if (MS.copy) { MS.copy(t); return; } } catch (e0) {}\n  try {\n    if (navigator.clipboard && navigator.clipboard.writeText) {\n      navigator.clipboard.writeText(t);\n      return;\n    }\n  } catch (e1) {}\n  try {\n    var ta = document.createElement('textarea');\n    ta.value = t;\n    ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';\n    document.body.appendChild(ta);\n    ta.select();\n    document.execCommand('copy');\n    ta.remove();\n    return;\n  } catch (e2) {}\n  MS.log(t);\n}\nMS.hook('render:footerButtons', function (kind, list) {\n  return [{\n    label: '复制文件名',\n    icon: '📋',\n    onClick: function () {\n      var arr = MS.media.list(kind) || [];\n      if (!arr.length) { MS.toast('当前列表为空', 'warn'); return; }\n      var names = [];\n      for (var i = 0; i < arr.length; i++) {\n        var u = String(arr[i]).split('#')[0].split('?')[0];\n        var n = u.split('/').pop();\n        names.push(n || u);\n      }\n      var text = names.join('\\n');\n      copyText(text);\n      MS.toast('已复制 ' + names.length + ' 个文件名', 'success');\n    }\n  }];\n});"
+}
