@@ -1,0 +1,15 @@
+{
+  "id": "no-watermark",
+  "name": "过滤水印变体地址",
+  "description": "解析结果里带 watermark / logo 字样的地址会被剔除，优先保留干净直链。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "parse",
+  "hooks": [
+    "parse:result"
+  ],
+  "config": {
+    "pattern": "watermark|logo|_wm|wm_|/wm/"
+  },
+  "code": "MS.hook('parse:result', function (result) {\n  if (!result) return result;\n  var pat = MS.config.get('pattern', 'watermark|logo|_wm|wm_|/wm/');\n  if (!pat) return result;\n  var re;\n  try {\n    re = new RegExp(pat, 'i');\n  } catch (e) {\n    return result;\n  }\n  try {\n    if (result.videoUrls && result.videoUrls.length > 1) {\n      var clean = [];\n      for (var i = 0; i < result.videoUrls.length; i++) {\n        if (!re.test(String(result.videoUrls[i]))) clean.push(result.videoUrls[i]);\n      }\n      if (clean.length && clean.length < result.videoUrls.length) {\n        result.videoUrls = clean;\n        result.videoUrl = clean[0];\n      }\n    }\n  } catch (e2) {}\n  return result;\n});"
+}
