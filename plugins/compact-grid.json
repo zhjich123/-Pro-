@@ -1,0 +1,15 @@
+{
+  "id": "compact-grid",
+  "name": "更紧凑的卡片网格",
+  "description": "缩小卡片最小宽度，同屏显示更多缩略图。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "ui",
+  "hooks": [
+    "render:layout"
+  ],
+  "config": {
+    "minCardWidth": 96
+  },
+  "code": "MS.hook('render:layout', function (cur, kind) {\n  var w = MS.config.get('minCardWidth', 96);\n  w = parseInt(w, 10);\n  if (!w || w < 60 || w > 320) return cur;\n  return { minCardWidth: w };\n});"
+}
