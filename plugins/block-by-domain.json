@@ -1,0 +1,19 @@
+{
+  "id": "block-by-domain",
+  "name": "屏蔽指定域名",
+  "description": "命中配置里域名的资源一律不显示，子域同样生效。",
+  "version": "1.0.0",
+  "author": "zhjich123",
+  "category": "enhance",
+  "hooks": [
+    "resource:keep"
+  ],
+  "config": {
+    "hosts": [
+      "doubleclick.net",
+      "googlesyndication.com",
+      "google-analytics.com"
+    ]
+  },
+  "code": "MS.hook('resource:keep', function (kind, url) {\n  var hosts = MS.config.get('hosts', []);\n  if (!hosts || !hosts.length) return true;\n  var h = '';\n  try {\n    h = new URL(String(url), location.href).hostname.toLowerCase();\n  } catch (e) {\n    return true;\n  }\n  for (var i = 0; i < hosts.length; i++) {\n    var d = String(hosts[i] || '').toLowerCase().trim().replace(/^\\.+/, '');\n    if (!d) continue;\n    if (h === d) return false;\n    if (h.length > d.length && h.slice(-(d.length + 1)) === '.' + d) return false;\n  }\n  return true;\n});"
+}
